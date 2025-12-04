@@ -22,7 +22,7 @@ template <typename T> class Vector
     using const_iterator = const T*;
 
     /**
-     * @brief Constructor an empty vector with optional initial capacity.
+     * @brief Construct an empty vector with optional initial capacity.
      * @param initialCapacity Initial capacity (default: 0, will allocate on first insertion).
      */
     explicit Vector(size_type initialCapacity = 0)
@@ -46,11 +46,11 @@ template <typename T> class Vector
      * @brief Copy constructor - performs deep copy.
      * @param other The vector to copy from.
      */
-    Vector(const T& other)
-        : items_{other.size_ > 0 ? std::make_unique<t[]>(other.capacity_) : nullptr},
+    Vector(const Vector& other)
+        : elements_{other.size_ > 0 ? std::make_unique<T[]>(other.capacity_) : nullptr},
           capacity_{other.capacity_}, size_{other.size_}
     {
-        std::copy_n(other.items_.get(), size_, items_.get());
+        std::copy_n(other.elements_.get(), size_, elements_.get());
     }
 
     /**
@@ -58,7 +58,7 @@ template <typename T> class Vector
      * @param other The vector to copy from.
      * @return Reference to this vector.
      */
-    Vector& operator=(cosnt Vector& other)
+    Vector& operator=(const Vector& other)
     {
         if (this != &other)
         {
@@ -74,7 +74,7 @@ template <typename T> class Vector
      * @param other The vector to move from.
      */
     Vector(Vector&& other) noexcept
-        : items_{std::move(other.items_)}, capacity_{other.capacity_}, size_{other.size_}
+        : elements_{std::move(other.elements_)}, capacity_{other.capacity_}, size_{other.size_}
     {
         other.capacity_ = 0;
         other.size_ = 0;
@@ -89,7 +89,7 @@ template <typename T> class Vector
     {
         if (this != &other)
         {
-            items_ = std::move(other.items_);
+            elements_ = std::move(other.elements_);
             capacity_ = other.capacity_;
             size_ = other.size_;
 
@@ -112,7 +112,7 @@ template <typename T> class Vector
      */
     reference operator[](size_type index) noexcept
     {
-        return items_[index];
+        return elements_[index];
     }
 
     /**
@@ -122,7 +122,7 @@ template <typename T> class Vector
      */
     const_reference operator[](size_type index) const noexcept
     {
-        return items_[index];
+        return elements_[index];
     }
 
     /**
@@ -138,7 +138,7 @@ template <typename T> class Vector
             throw std::out_of_range("Vector::at: index out of range");
         }
 
-        return items_[index];
+        return elements_[index];
     }
 
     /**
@@ -154,7 +154,7 @@ template <typename T> class Vector
             throw std::out_of_range("Vector::at: index out of range");
         }
 
-        return items_[index];
+        return elements_[index];
     }
 
     /**
@@ -169,7 +169,7 @@ template <typename T> class Vector
             throw std::out_of_range("Vector::front: vector is empty");
         }
 
-        return items_[0];
+        return elements_[0];
     }
 
     /**
@@ -184,7 +184,7 @@ template <typename T> class Vector
             throw std::out_of_range("Vector::front: vector is empty");
         }
 
-        return items_[0];
+        return elements_[0];
     }
 
     /**
@@ -196,10 +196,10 @@ template <typename T> class Vector
     {
         if (empty())
         {
-            throw std::out_of_range("Vector::back: vector is empty";)
+            throw std::out_of_range("Vector::back: vector is empty");
         }
 
-        return items_[size_ - 1];
+        return elements_[size_ - 1];
     }
 
     /**
@@ -214,7 +214,7 @@ template <typename T> class Vector
             throw std::out_of_range("Vector::back: vector is empty");
         }
 
-        return items_[size_ - 1];
+        return elements_[size_ - 1];
     }
 
     /**
@@ -223,7 +223,7 @@ template <typename T> class Vector
      */
     pointer data() noexcept
     {
-        return items_.get();
+        return elements_.get();
     }
 
     /**
@@ -232,43 +232,43 @@ template <typename T> class Vector
      */
     const_pointer data() const noexcept
     {
-        return items_.get();
+        return elements_.get();
     }
 
     /// @brief Get iterator to the beginning.
     iterator begin() noexcept
     {
-        return items_.get();
+        return elements_.get();
     }
 
     /// @brief Get iterator to the end.
     iterator end() noexcept
     {
-        return items_.get() + size_;
+        return elements_.get() + size_;
     }
 
     /// @brief Get const iterator to the beginning.
     const_iterator begin() const noexcept
     {
-        return items_.get();
+        return elements_.get();
     }
 
     /// @brief Get const iterator to the end.
     const_iterator end() const noexcept
     {
-        return items_.get() + size_;
+        return elements_.get() + size_;
     }
 
     /// @brief Get const iterator to the beginning.
     const_iterator cbegin() const noexcept
     {
-        return items_.get();
+        return elements_.get();
     }
 
     /// @brief Get const iterator to the end.
     const_iterator cend() const noexcept
     {
-        return items_.get() + size_;
+        return elements_.get() + size_;
     }
 
     /**
@@ -315,12 +315,12 @@ template <typename T> class Vector
         auto newArray = std::make_unique<T[]>(newCapacity);
 
         // Move elements to new array
-        for (size_type i = 0; i < size_t; ++i)
+        for (size_type i = 0; i < size_; ++i)
         {
-            newArray[i] = std::move(items_[i]);
+            newArray[i] = std::move(elements_[i]);
         }
 
-        items_ = std::move(newArray);
+        elements_ = std::move(newArray);
         capacity_ = newCapacity;
     }
 
@@ -333,11 +333,11 @@ template <typename T> class Vector
     {
         if (capacity_ > size_)
         {
-            size_type newCapacity = size_ > 0 ? size_ : o;
+            size_type newCapacity = size_;
 
             if (newCapacity == 0)
             {
-                items_.reset();
+                elements_.reset();
                 capacity_ = 0;
             }
             else
@@ -345,10 +345,10 @@ template <typename T> class Vector
                 auto newArray = std::make_unique<T[]>(newCapacity);
                 for (size_type i = 0; i < size_; ++i)
                 {
-                    newArray[i] = std::move(items_[i]);
+                    newArray[i] = std::move(elements_[i]);
                 }
 
-                items_ = std::move(newArray);
+                elements_ = std::move(newArray);
                 capacity_ = newCapacity;
             }
         }
@@ -361,6 +361,7 @@ template <typename T> class Vector
      */
     void clear() noexcept
     {
+        std::destroy_n(elements_.get(), size_);
         size_ = 0;
     }
 
@@ -373,7 +374,7 @@ template <typename T> class Vector
     void push_back(const T& item)
     {
         ensureCapacity();
-        items_[size_++] = item;
+        elements_[size_++] = item;
     }
 
     /**
@@ -385,7 +386,7 @@ template <typename T> class Vector
     void push_back(T&& item)
     {
         ensureCapacity();
-        items_[size_++] = std::move(item);
+        elements_[size_++] = std::move(item);
     }
 
     /**
@@ -422,7 +423,7 @@ template <typename T> class Vector
         {
             for (size_type i = size_; i < count; ++i)
             {
-                items_[i] = T();
+                elements_[i] = T();
             }
         }
 
@@ -437,7 +438,7 @@ template <typename T> class Vector
     {
         std::swap(size_, other.size_);
         std::swap(capacity_, other.capacity_);
-        std::swap(items_, other.items_);
+        std::swap(elements_, other.elements_);
     }
 
   private:
