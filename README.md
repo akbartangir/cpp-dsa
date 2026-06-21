@@ -8,7 +8,7 @@ This repo contains C++ implementations of common data structures and algorithms.
 
 - Build system: CMake
 - Tests: GoogleTest
-- Layout: data structures in `include/`, sources in `src/`, tests in `tests/`
+- Layout: data structures in `ds/`, sources in `src/`, tests in `tests/`
 
 ## Prerequisites
 
