@@ -6,14 +6,14 @@ Data Structures and Algorithms in C++
 
 This repo contains C++ implementations of common data structures and algorithms.
 
-- Build system: CMake (C++17)
+- Build system: CMake
 - Tests: GoogleTest (auto-downloaded with CMake)
-- Simple layout: headers in `include/`, sources in `src/`, tests in `tests/`
+- Layout: headers in `include/`, sources in `src/`, tests in `tests/`
 
 ## Prerequisites
 
 - CMake 3.10+
-- A C++17 compiler (g++/clang++)
+- A C++20 compiler (g++/clang++)
 - Build toolchain (Ninja or Make; CMake will pick one available)
 
 ## Build
@@ -31,7 +31,7 @@ cmake --build build -j
 
 ## Run tests (GoogleTest)
 
-All test files under `tests/*.cpp` are compiled into a single test runner (`unit_tests`). No CMake edits are needed when adding new test files.
+All test files under `tests/*.cpp` are compiled into a single test runner (`unit_tests`).
 
 Run the full suite:
 
@@ -70,7 +70,7 @@ TEST(StackTest, PushPop) {
 }
 ```
 
-3) Rebuild and run tests (no CMake changes required):
+3) Rebuild and run tests:
 
 ```bash
 cmake --build build -j
@@ -81,10 +81,9 @@ ctest --test-dir build --output-on-failure
 
 ```
 include/              # Public headers
-src/                  # Implementations (main in src/main.cpp)
-tests/                # GoogleTest sources (auto-discovered)
-CMakeLists.txt        # Build config (downloads GoogleTest)
-build/                # Out-of-source build directory
+src/                  # Implementations
+tests/                # Test cases
+CMakeLists.txt        # Build config
 ```
 
 ## Tips
