@@ -7,14 +7,14 @@ Data Structures and Algorithms in C++
 This repo contains C++ implementations of common data structures and algorithms.
 
 - Build system: CMake
-- Tests: GoogleTest (auto-downloaded with CMake)
-- Layout: headers in `include/`, sources in `src/`, tests in `tests/`
+- Tests: GoogleTest
+- Layout: data structures in `include/`, sources in `src/`, tests in `tests/`
 
 ## Prerequisites
 
 - CMake 3.10+
 - A C++20 compiler (g++/clang++)
-- Build toolchain (Ninja or Make; CMake will pick one available)
+- Build toolchain Ninja or Make
 
 ## Build
 
@@ -47,19 +47,19 @@ Run the test binary directly (useful for filtering):
 
 ## Add a new data structure/algorithm
 
-1) Create a header in `include/`, e.g. `include/stack.h`.
-2) Implement it in `src/…`, e.g. `src/data_structures/stack.cpp`.
+1) Create a file in `ds/` or `al`, e.g. `ds/stack.h`.
+2) Write implementations.
 
 The project builds a reusable library from everything in `src/` (except `src/main.cpp`), so your new code is automatically compiled for both the app and the tests.
 
 ## Add a new test
 
 1) Create a file under `tests/`, e.g. `tests/test_stack.cpp`.
-2) Write GoogleTest cases:
+2) Write test cases:
 
 ```cpp
 #include <gtest/gtest.h>
-#include "../include/stack.h"
+#include "../ds/stack.h"
 
 TEST(StackTest, PushPop) {
 	Stack s;
@@ -80,10 +80,11 @@ ctest --test-dir build --output-on-failure
 ## Project structure
 
 ```
-include/              # Public headers
-src/                  # Implementations
-tests/                # Test cases
-CMakeLists.txt        # Build config
+ds/             # Data structures
+al/             # Algorithms
+src/            # Playground
+tests/          # Test cases
+CMakeLists.txt  # Build config
 ```
 
 ## Tips
